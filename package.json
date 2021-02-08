@@ -1,15 +1,24 @@
 {
-  "name": "top-5000-songs",
+  "name": "employeetracker",
   "version": "1.0.0",
-  "description": "",
-  "main": "TopSongsCode.js",
+  "description": "A solution for managing a company's employees using node, inquirer, and MySQL.",
+  "main": "EmployeeTracker.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ilya-libershteyn/EmployeeTracker.git"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "inquirer": "^6.2.1",
-    "mysql": "^2.16.0"
-  }
+    "mysql": "^2.16.0",
+    "console.table": "^0.10.0"
+  },
+  "bugs": {
+    "url": "https://github.com/ilya-libershteyn/EmployeeTracker/issues"
+  },
+  "homepage": "https://github.com/ilya-libershteyn/EmployeeTracker#readme"
 }

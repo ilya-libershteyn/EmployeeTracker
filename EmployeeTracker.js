@@ -1,34 +1,15 @@
-var mysql = require("mysql");
-var inquirer = require("inquirer");
+const inquirer = require("inquirer");
+const { getEmployees } = require("./DB");
 
-var connection = mysql.createConnection
-({
-  host: "localhost",
-
-  // Your port; if not 3306
-  port: 3306,
-
-  // Your username
-  user: "root",
-
-  // Your password
-  password: "",
-  database: "employeeDB"
-});
-
-connection.connect(function(err) 
-{
-  if (err) throw err;
-  runSearch();
-});
+const db = require("./DB");
+const connection = require("./DB/connection");
 
 function runSearch() 
 {
   inquirer
-    .prompt
-    ({
+    .prompt( {
       name: "action",
-      type: "rawlist",
+      type: "list",
       message: "What would you like to do?",
       choices: [
         "Add departments",
@@ -40,56 +21,34 @@ function runSearch()
         "Update employee roles"
       ]
     })
-    .then(function(answer) 
-    {
+    .then((answer) => {
       switch (answer.action) 
       {
         case "View employees":
-          employeeSearch();
-          break;
-
-        case "Add employees":
-          employeeInsert();
-          break;
-
-        case "Find data within a specific range":
-          rangeSearch();
-          break;
-
-        case "Search for a specific song":
-          songSearch();
-          break;
-
-        case "Find artists with a top song and top album in the same year":
-          songAndAlbumSearch();
-          break;
+          getEmployees();
+          return;
+        
+        case "View Jobs":
+          getJobs();
+          return;
+        
+        case "View departments":
+          getDeparments();
+          return;
+        
+        default:
+          connection.end();
       }
     });
 }
 
-function employeeSearch() 
-{
-  inquirer
-    .prompt
-    ({
-      name: "employee",
-      type: "input",
-      message: "What employee would you like to search for?"
-    })
-    .then(function(answer) 
-    {
-      var query = "SELECT * FROM employee WHERE ?";
-      connection.query(query, { employee: answer.employee }, function(err, res) 
-      {
-        if (err) throw err;
+runSearch();
 
-        // Log all results of the SELECT statement
-        console.log(res);
-        runSearch();
-      });
-    });
+function viewDeparments() {
+  db.getDepartments().then((results) => {
+
+  });
 }
-
 function employeeInsert() 
 {
   inquirer
