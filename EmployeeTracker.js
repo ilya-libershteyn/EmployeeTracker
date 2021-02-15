@@ -20,7 +20,7 @@ function runSearch()
         "View employees",
         "View roles",
         "View departments",
-        //"Update employee roles",
+        "Update employee roles",
         "Exit"
       ]
     })
@@ -50,6 +50,10 @@ function runSearch()
 
         case "Add employees":
           createEmployee();
+          return;
+
+        case "Update employee roles":
+          updateEmployee();
           return;
 
         default:
@@ -215,5 +219,53 @@ function createJob()
     }
   );
 };
+
+function updateEmployee()
+{
+  db.getEmployees().then
+  ((rows) =>
+    {
+      const empData = rows.map
+      ((row) =>
+        ({
+          value: row.id,
+          name: `${row.first_name} ${row.last_name}`
+        })
+      );
+
+      db.getJobs().then
+      ((res) =>
+        {
+          inquirer.prompt
+          ([{
+              name: "id",
+              type: "list",
+              message: "Employee to change: ",
+              choices: empData
+          },
+          {
+              name: "role_id",
+              type: "list",
+              message: "New role: ",
+              choices: res.map
+              ((job) =>
+                ({
+                    value: job.id,
+                    name: job.title
+                })
+              )
+          }]).then
+          (update =>
+            {
+              db.updateEmployee(update);
+              console.log("Employee updated");
+              runSearch();
+            }
+          );
+        }
+      )
+    }
+  )
+}
 
 runSearch();

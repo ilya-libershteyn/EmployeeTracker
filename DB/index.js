@@ -16,7 +16,9 @@ module.exports =
   },
   getEmployees() 
   {
-    return connection.query("SELECT * FROM employee")
+    return connection.query("SELECT employee.*, job.title, department.dep_name "
+                          + "FROM employee LEFT JOIN job ON (employee.role_id = job.id) "
+                          + "INNER JOIN department ON (job.department_id = department.id)");
   },
   getManagers()
   {
@@ -28,10 +30,6 @@ module.exports =
   insertEmployee(data)
   {
     return connection.query("INSERT INTO employee SET ?", data);
-    /*title = connection.query("SELECT title FROM job WHERE id = ?" data.role_id);
-    return connection.query("SELECT id FROM employee INNER JOIN job ON" 
-    + "(employee.role_id = job.id)"
-    + "WHERE (job.title = 'Lead%' OR job.title = '%Manager') AND job.id = ?", data);*/
   },
   insertJob(data) 
   {
@@ -40,5 +38,19 @@ module.exports =
   insertDepartment(data)
   {
     return connection.query("INSERT INTO department SET ?", data);
+  },
+  updateEmployee(data)
+  {
+    return connection.query
+          ("UPDATE employee SET ? WHERE ?",
+            [
+                {
+                    role_id: data.role_id,
+                },
+                {
+                    id: data.id
+                }
+            ]
+          );
   }
 }
