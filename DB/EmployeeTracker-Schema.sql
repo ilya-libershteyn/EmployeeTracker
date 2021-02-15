@@ -1,30 +1,31 @@
 DROP DATABASE IF EXISTS employeeDB;
-CREATE database employeeDB;
+CREATE DATABASE employeeDB;
 
 USE employeeDB;
 
-CREATE TABLE employee
+CREATE TABLE department
 (
-  id INTEGER NOT NULL,
-  first_name VARCHAR(30) NOT NULL,
-  last_name VARCHAR(30),
-  role_id INTEGER NOT NULL,
-  manager_id INTEGER NOT NULL,
-  PRIMARY KEY(id)
+  id INT NOT NULL AUTO_INCREMENT,
+  dep_name VARCHAR(30) NULL,
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE job
 (
-  deparment_id INT NOT NULL,
+  id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(30) NULL,
   salary DECIMAL NULL,
-  id INTEGER  NOT NULL,
-  PRIMARY KEY(id)
+  department_id INT NULL,
+  FOREIGN KEY (department_id) REFERENCES department(id)
 );
 
-CREATE TABLE department
+CREATE TABLE employee
 (
-  id INTEGER NOT NULL,
-  dep_name VARCHAR(30),
-  PRIMARY KEY(id)
+  id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(30) NULL,
+  last_name VARCHAR(30) NULL,
+  role_id INTEGER NULL,
+  manager_id INTEGER NULL,
+  FOREIGN KEY (role_id) REFERENCES job(id),
+  FOREIGN KEY (manager_id) REFERENCES employee(id)
 );

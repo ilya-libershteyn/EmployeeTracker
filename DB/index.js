@@ -9,5 +9,8 @@ module.exports = {
   },
   getEmployees() {
     return connection.query("SELECT * FROM employee")
+  },
+  insertJob(data) {
+    return connection.query("INSERT INTO job SET ?", data);
   }
 }
