@@ -14,9 +14,9 @@ function runSearch()
       message: "What would you like to do?",
       choices: 
       [
-        //"Add departments",
+        "Add departments",
         "Add roles",
-        //"Add employees",
+        "Add employees",
         "View employees",
         "View roles",
         "View departments",
@@ -37,11 +37,19 @@ function runSearch()
           return;
         
         case "View departments":
-          viewDeparments();
+          viewDepartments();
           return;
         
         case "Add roles":
           createJob();
+          return;
+
+        case "Add departments":
+          createDepartment();
+          return;
+
+        case "Add employees":
+          createEmployee();
           return;
 
         default:
@@ -51,7 +59,7 @@ function runSearch()
 };
 
 // Functions to invoke database functions and display to console
-function viewDeparments() 
+function viewDepartments() 
 {
   db.getDepartments().then((results) => 
   {
@@ -79,6 +87,91 @@ function viewJobs() {
     }
   );
 };
+
+function createDepartment()
+{
+  inquirer.prompt
+  ([{
+    name: "dep_name",
+    type: "input",
+    message: "What is the name of the new department?"
+  }]).then
+  (res =>
+    {
+      db.insertDepartment(res).then
+      ((res) =>
+        {
+          console.log("New department added successfully")
+          runSearch();
+        }
+      )
+    }
+  )
+}
+
+function createEmployee()
+{
+  db.getJobs().then
+  ((jobs) =>
+    {
+      const roles = jobs.map
+      ((job) => 
+        ({
+          value: job.id,
+          name: job.title
+        })
+      );
+
+      db.getManagers().then
+      ((managers) =>
+        inquirer.prompt
+        ([
+          {
+            name: "first_name",
+            type: "input",
+            message: "First name: "
+          },
+          {
+            name: "last_name",
+            type: "input",
+            message: "Last name: "
+          },
+          {
+            name: "manager_id",
+            type: "list",
+            message: "Manager: ",
+            choices: managers.map
+            ((manager) => 
+              ({
+                value: manager.id,
+                name: `${manager.first_name} ${manager.last_name}`
+              })
+            )
+          },
+          {
+            name: "role_id",
+            type: "list",
+            message: "Role: ",
+            choices: roles       
+          }
+        ]).then
+        (
+          (res) =>
+          {
+            
+            db.insertEmployee(res).then
+            ((res) => 
+              { 
+                console.log("New employee hired")
+                runSearch();
+              }
+            );
+          }
+        )
+      )
+    }
+  );
+}
 
 function createJob() 
 {
@@ -110,12 +203,13 @@ function createJob()
       }]).then
       (res => 
         {
-          db.insertJob(res).then((res) =>
-          {
-            console.log("New job added successfully")
-            runSearch();
-          })
-          
+          db.insertJob(res).then
+          ((res) =>
+            {
+              console.log("New job added successfully")
+              runSearch();
+            }
+          ) 
         }
       );
     }
